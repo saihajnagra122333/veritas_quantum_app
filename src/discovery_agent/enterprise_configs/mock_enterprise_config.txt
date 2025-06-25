@@ -1,0 +1,22 @@
+# Enterprise Web Server Configuration for Production Environment (prod-east-01)
+ServerName www.enterprise.com
+Listen 443
+SSLEngine on
+SSLCertificateFile /etc/ssl/certs/2024/prod_enterprise_cert.pem
+SSLCertificateKeyFile /etc/ssl/private/2024/prod_enterprise_key.pem
+SSLProtocol All -SSLv2 -SSLv3 -TLSv1 -TLSv1.1
+SSLCipherSuite TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:ECDHE-RSA-AES128-GCM-SHA256 # Note the mix
+# Key Management System Integration for Quantum-Safe Keys
+KMS_PROVIDER=Google_Cloud_KMS
+KMS_KEY_RING=pqc-keyring-prod
+PQC_ENCRYPTION_KEY_ID=projects/my-proj/locations/global/keyRings/pqc-keyring-prod/cryptoKeys/kyber-768-prod
+PQC_SIGNING_KEY_ID=projects/my-proj/locations/global/keyRings/pqc-keyring-prod/cryptoKeys/dilithium-3-prod
+# Database Encryption
+DB_TYPE=PostgreSQL
+DB_ENCRYPTION_ALGORITHM=AES256_GCM
+DB_ENCRYPTION_KEY_PATH=/opt/app/db/db_aes.key
+# Old SSH Key (Potential Vulnerability - often overlooked!)
+SSH_HOST_KEY=/etc/ssh/ssh_host_rsa_key.pub # This is likely RSA, a quantum vulnerability
+# Legacy Application with Weak Crypto (another common enterprise blind spot)
+LEGACY_APP_CRYPTO_LIB=OpenSSL_0.9.8 # Very old, potentially vulnerable
+LEGACY_APP_CERT=/opt/legacy_app/certs/old_rsa_1024.crt # RSA-1024, highly vulnerable
